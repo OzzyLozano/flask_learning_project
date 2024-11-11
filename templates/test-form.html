@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>form w/flask</title>
+</head>
+<body>
+  <h1>tests c:</h1>
+  <div>
+    <form method="GET" action="{{ url_for('handle_get') }}">
+      <input type="text" name="username" placeholder="username">
+      <input type="text" name="password" placeholder="password">
+      <button type="submit" id="submit-form">Submit</button>
+    </form>
+  </div>
+</body>
+</html>

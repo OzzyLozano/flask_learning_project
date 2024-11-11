@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  {%block extra_links%}{%endblock%}
+  <title>{% block title %}Alerta Unida{% endblock %}</title>
+</head>
+<body>
+  <nav>
+    <a href="" class="logo-link">
+      <img src="{{ url_for('static', filename='img/alerta_unida_isotipo.png') }}" alt="logo" class="logo">
+      Alerta Unida
+    </a>
+    <button id="navbar-toggler" type="button" class="navbar-btn">
+      <div class="navbar-btn__upper-line"></div>
+      <div class="navbar-btn__bottom-line"></div>
+    </button>
+    <div  id="navbar-content" class="navbar-content close-navbar">
+      {% block nav_content %}
+      <ul>
+        <li><a href="{{ url_for('index') }}" class="nav-link">Inicio</a></li>
+        <li><a href="{{ url_for('login') }}" class="nav-link">Iniciar Sesión</a></li>
+        <li><a href="{{ url_for('register') }}" class="nav-link">Registrarse</a></li>
+      </ul>
+      {% endblock %}
+    </div>
+  </nav>
+  <div style="margin-top: 4.5rem;"></div>
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+  <footer></footer>
+  <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+
+{%block extra_links%}
+{%endblock%}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+
+<div class="card" style="position: relative;margin: auto;">
+  <h2 class="card-title">Regístrate</h2>
+  <form action="{{ url_for('handle_registry') }}" method="POST">
+    <ul class="card-content">
+      <li><input type="text" placeholder="No. de Control" name="id" required></li>
+      <li><input type="password" placeholder="Contraseña" name="password" required></li>
+      <li><button type="submit" class="login-btn">Registrarse</button></li>
+    </ul>
+  </form>
+</div>
+
+{% endblock %}

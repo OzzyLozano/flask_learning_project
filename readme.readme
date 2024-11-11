@@ -1,0 +1,12 @@
+activate virtual environment on git bash:
+  . ./.venv/Scripts/activate
+on powershell:
+  .venv\Scripts\activate
+
+run flask app:
+  flask --app <filename.py> run
+  if file name == app.py:
+  flask run
+
+to have live reload, go debug:
+  flask run --debug
