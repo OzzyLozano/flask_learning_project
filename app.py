@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, url_for, render_template
+from flask import Flask, jsonify, redirect, request, url_for, render_template
 from markupsafe import escape
 import sqlite3
 import bcrypt
@@ -26,10 +26,13 @@ def profile(id):
   cursor = connection.cursor()
   cursor.execute(f"select username from users where username='{id}';")
   user_data = cursor.fetchone()
+  connection.commit()
+  connection.close()
   if user_data:
     return render_template('profile.html', id=id)
   else:
     return render_template('404.html')
+
 @app.route('/handle_login', methods=['GET', 'POST'])
 def handle_login():
   # set up connection & cursor to get users and passwords
@@ -39,6 +42,8 @@ def handle_login():
   password = request.args['password']
   cursor.execute(f"select username, password from users where username='{username}';")
   user_data = cursor.fetchone()
+  connection.commit()
+  connection.close()
   if (request.method == 'GET'):
     if user_data:
       if bcrypt.checkpw(password.encode('utf-8'), user_data[1].encode('utf-8')):
@@ -70,8 +75,40 @@ def handle_registry():
       print(username, hashed_password)
       cursor.execute(f"insert into users(username, password) values (?, ?)", (username, hashed_password))
       connection.commit()
+      connection.close()
       return redirect(url_for('login'))
   else: return '<h1>Error: Not a POST request.</h1>'
+
+@app.route('/getUsers')
+def get_users():
+  connection = sqlite3.connect(db_path)
+  cursor = connection.cursor()
+  users = cursor.execute(f"select user_id, username, password from users;").fetchall()
+  connection.commit()
+  connection.close()
+  user_list = [{"id": user[0], "username": user[1], "password": user[2]} for user in users]
+  return jsonify(user_list)
+
+@app.route('/app_login', methods=['POST'])
+def app_login():
+  data = request.get_json()
+  user_id = data.get("user_id")
+  password = data.get("password")
+  print(f"Received login attempt for user_id: {user_id}")
+  connection = sqlite3.connect(db_path)
+  cursor = connection.cursor()
+  cursor.execute(f"select user_id, username, password from users where user_id={user_id};")
+  user = cursor.fetchone()
+  connection.close()
+  if not user:
+    print('user not found')
+    return jsonify({"message": 'User not found'}), 404
+  elif bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
+    print(f"User {user_id} logged in successfully")
+    return jsonify({"id": user[0], "username": user[1], "password": user[2]}), 200
+  else:
+    print('wrong password')
+    return jsonify({"message": "Wrong password"}), 401
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', debug=True)
